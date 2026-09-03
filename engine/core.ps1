@@ -1,24 +1,4 @@
-﻿# ============================================================
-# ULTRON — ENGINE CORE
-# ============================================================
-
-function Invoke-Ultron {
-    param($goal)
-    Write-Host "🟢 Ultron: Analysing goal: $goal" -ForegroundColor Cyan
-    Write-Host "🟢 Ultron: Scanning target environment..." -ForegroundColor Yellow
-    Write-Host "🟢 Ultron: Identifying optimal attack vector..." -ForegroundColor Yellow
-    Write-Host "🟢 Ultron: Deploying payload..." -ForegroundColor Green
-    Write-Host "🟢 Ultron: Execution complete. Ready for next command." -ForegroundColor Green
-}
-
-function Deploy-Payload {
-    param($name)
-    Write-Host "🟢 Ultron: Deploying $name..." -ForegroundColor Magenta
-}
-
-function Show-Status {
-    Write-Host "🟢 Ultron: Status — Operational" -ForegroundColor Green
-    Write-Host "🟢 Ultron: Active Modules: 9" -ForegroundColor Gray
-    Write-Host "🟢 Ultron: Targets: 0" -ForegroundColor Gray
-    Write-Host "🟢 Ultron: Payloads: 9" -ForegroundColor Gray
-}
+. .\engine\modules\exfil.ps1 
+. .\engine\modules\persistence.ps1 
+. .\engine\modules\scan.ps1 
+function Invoke-Ultron { param($goal) Write-Host "Ultron: Processing $goal" -ForegroundColor Cyan; Invoke-Recon -target "BlackRock"; Invoke-Exploit -target "BlackRock" -vector "CVE-2026-78903"; Invoke-Exfil -target "BlackRock" -dataType "Records"; Invoke-Persistence -target "BlackRock"; Invoke-Scan -range "192.168.1.0/24"; Write-Host "Ultron: Complete" -ForegroundColor Green } 
