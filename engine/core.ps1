@@ -1,4 +1,1 @@
-. .\engine\modules\exfil.ps1 
-. .\engine\modules\persistence.ps1 
-. .\engine\modules\scan.ps1 
-function Invoke-Ultron { param($goal) Write-Host "Ultron: Processing $goal" -ForegroundColor Cyan; Invoke-Recon -target "BlackRock"; Invoke-Exploit -target "BlackRock" -vector "CVE-2026-78903"; Invoke-Exfil -target "BlackRock" -dataType "Records"; Invoke-Persistence -target "BlackRock"; Invoke-Scan -range "192.168.1.0/24"; Write-Host "Ultron: Complete" -ForegroundColor Green } 
+function Invoke-Ultron { param($target, $objective) Write-Host "Ultron: Target: $target — Objective: $objective" -ForegroundColor Cyan; Invoke-Recon -target $target; Invoke-Exploit -target $target -vector "CVE-2026-78903"; Invoke-Exfil -target $target -dataType $objective; Invoke-Persistence -target $target; Invoke-Scan -range "192.168.1.0/24"; Write-Host "Ultron: Complete" -ForegroundColor Green; $result = "Success"; Send-UltronReport -goal "$target — $objective" -result $result; Write-UltronLog -goal "$target — $objective" -result $result; Save-UltronMemory -goal "$target — $objective" } 
